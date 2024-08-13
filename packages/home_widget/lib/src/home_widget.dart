@@ -129,16 +129,16 @@ class HomeWidget {
   /// More Info on setting this up in the README
   @Deprecated('Use `registerInteractivityCallback` instead')
   static Future<bool?> registerBackgroundCallback(
-    FutureOr<void> Function(Uri?) callback,
-  ) =>
+      FutureOr<void> Function(Uri?) callback,
+      ) =>
       registerInteractivityCallback(callback);
 
   /// Register a callback that gets called when clicked on a specific View in a HomeWidget
   /// This enables having Interactive Widgets that can call Dart Code
   /// More Info on setting this up in the README
   static Future<bool?> registerInteractivityCallback(
-    FutureOr<void> Function(Uri?) callback,
-  ) {
+      FutureOr<void> Function(Uri?) callback,
+      ) {
     final args = <dynamic>[
       ui.PluginUtilities.getCallbackHandle(callbackDispatcher)?.toRawHandle(),
       ui.PluginUtilities.getCallbackHandle(callback)?.toRawHandle(),
@@ -151,11 +151,11 @@ class HomeWidget {
   /// The png file is saved to the App Group container and the full path is returned as a string.
   /// The filename is saved to UserDefaults using the provided key.
   static Future renderFlutterWidget(
-    Widget widget, {
-    required String key,
-    Size logicalSize = const Size(200, 200),
-    double pixelRatio = 1,
-  }) async {
+      Widget widget, {
+        required String key,
+        Size logicalSize = const Size(200, 200),
+        double pixelRatio = 1,
+      }) async {
     /// finding the widget in the current context by the key.
     final RenderRepaintBoundary repaintBoundary = RenderRepaintBoundary();
 
@@ -167,15 +167,16 @@ class HomeWidget {
 
     try {
       final RenderView renderView = RenderView(
-        view: ui.PlatformDispatcher.instance.implicitView!,
+        // view: ui.PlatformDispatcher.instance.implicitView!,
         child: RenderPositionedBox(
           alignment: Alignment.center,
           child: repaintBoundary,
         ),
         configuration: ViewConfiguration(
-          logicalConstraints: BoxConstraints.tight(logicalSize),
+          size: logicalSize,
           devicePixelRatio: 1.0,
-        ),
+        ), window: ui.window,
+
       );
 
       /// setting the rootNode to the renderview of the widget
@@ -186,7 +187,7 @@ class HomeWidget {
 
       /// setting the rootElement with the widget that has to be captured
       final RenderObjectToWidgetElement<RenderBox> rootElement =
-          RenderObjectToWidgetAdapter<RenderBox>(
+      RenderObjectToWidgetAdapter<RenderBox>(
         container: repaintBoundary,
         child: Directionality(
           textDirection: TextDirection.ltr,
@@ -219,11 +220,11 @@ class HomeWidget {
       pipelineOwner.flushPaint();
 
       final ui.Image image =
-          await repaintBoundary.toImage(pixelRatio: pixelRatio);
+      await repaintBoundary.toImage(pixelRatio: pixelRatio);
 
       /// The raw image is converted to byte data.
       final ByteData? byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
+      await image.toByteData(format: ui.ImageByteFormat.png);
 
       try {
         late final String? directory;
@@ -232,8 +233,8 @@ class HomeWidget {
         if (Platform.isIOS) {
           final PathProviderFoundation provider = PathProviderFoundation();
           assert(
-            HomeWidget.groupId != null,
-            'No groupId defined. Did you forget to call `HomeWidget.setAppGroupId`',
+          HomeWidget.groupId != null,
+          'No groupId defined. Did you forget to call `HomeWidget.setAppGroupId`',
           );
           directory = await provider.getContainerPath(
             appGroupIdentifier: HomeWidget.groupId!,
@@ -272,13 +273,13 @@ class HomeWidget {
   /// Returns an empty list if no widgets are pinned.
   static Future<List<HomeWidgetInfo>> getInstalledWidgets() async {
     final List<dynamic>? result =
-        await _channel.invokeMethod('getInstalledWidgets');
+    await _channel.invokeMethod('getInstalledWidgets');
     return result
-            ?.map(
-              (widget) =>
-                  HomeWidgetInfo.fromMap(widget.cast<String, dynamic>()),
-            )
-            .toList() ??
+        ?.map(
+          (widget) =>
+          HomeWidgetInfo.fromMap(widget.cast<String, dynamic>()),
+    )
+        .toList() ??
         [];
   }
 }
