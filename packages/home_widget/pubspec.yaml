@@ -16,8 +16,8 @@ screenshots:
     path: pub/screenshots/android.png
 
 environment:
-  sdk: '>=2.19.6 <4.0.0'
-  flutter: '>=3.7.12'
+  sdk: '>=2.18.5 <4.0.0'
+  flutter: '>=3.3.9'
 
 dependencies:
   flutter:
